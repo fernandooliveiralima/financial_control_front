@@ -7,7 +7,7 @@ export const useTokenStore = defineStore('tokenStore', () => {
 
     // Função para carregar dados do localStorage
     const loadTokenFromStorage = () => {
-        if (userToken.value) {
+        if (import.meta.client) {
             const storedToken = localStorage.getItem('userToken');
             if (storedToken) {
                 userToken.value = storedToken;
@@ -16,7 +16,9 @@ export const useTokenStore = defineStore('tokenStore', () => {
                 userToken.value = null;
                 loggedIn.value = false;
             }
+            return storedToken;   
         }
+            
     };
 
     // Chama a função imediatamente ao carregar a store
@@ -26,9 +28,8 @@ export const useTokenStore = defineStore('tokenStore', () => {
     const setToken = (token) => {
         userToken.value = token;
         loggedIn.value = true;
-        if (userToken.value) {
-            localStorage.setItem('userToken', token);
-        }
+        localStorage.setItem('userToken', token);
+        
     };
 
     // Observa mudanças no userToken e atualiza o localStorage
@@ -46,7 +47,7 @@ export const useTokenStore = defineStore('tokenStore', () => {
     const clearToken = () => {
         userToken.value = null;
         loggedIn.value = false;
-        if ( !userToken.value /* !import.meta.env.SSR */) {
+        if (import.meta.client) { //!import.meta.env.SSR
             return localStorage.removeItem('userToken');
         }
     };
