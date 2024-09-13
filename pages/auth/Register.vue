@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import {storeToRefs} from 'pinia'
 import {useTokenStore} from '@/stores/authStore/tokenStore';
-import {useAuthStore} from '@/stores/authStore/authStore'
+import {useAuthStore} from '../../stores/authStore/authStore';
 
 definePageMeta({
   middleware: ["guest"]

@@ -1,8 +1,10 @@
-<script setup>
+<script setup lang="ts">
 
-import { useAuthStore } from '~/stores/authStore/authStore';
-import { useTokenStore } from '@/stores/authStore/tokenStore';
 import { storeToRefs } from 'pinia';
+
+import {useAuthStore} from '../../stores/authStore/authStore';
+import { useTokenStore } from '@/stores/authStore/tokenStore';
+
 
 definePageMeta({
   middleware: ["guest"]
@@ -10,8 +12,11 @@ definePageMeta({
 })
 
 const authStoreInstance = useAuthStore();
+
 const tokenStoreInstance = useTokenStore();
 const { loggedIn, userToken } = storeToRefs(tokenStoreInstance);
+
+
 
 const appErrors = ref([]);
 
@@ -23,10 +28,12 @@ const userFormLogin = reactive({
 const userSubmit = async () => {
     try {
         await authStoreInstance.userLogin(userFormLogin);
-    } catch (error) {
+    } catch (error: any) {
         appErrors.value = error.data.errors;
     }
 };
+
+
 </script>
 
 <template>

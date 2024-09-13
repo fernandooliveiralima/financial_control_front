@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.3",
+    "chart.js": "^4.4.4",
+    "dayjs": "^1.11.13",
     "nuxt": "^3.12.4",
     "pinia": "^2.2.1",
     "vue": "latest"

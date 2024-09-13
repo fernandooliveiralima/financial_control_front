@@ -1,4 +1,4 @@
-import { useTokenStore } from "~/stores/authStore/tokenStore";
+import { useTokenStore } from "@/stores/authStore/tokenStore";
 import { storeToRefs } from 'pinia';
 
 export default defineNuxtRouteMiddleware((to, from) => {
@@ -7,8 +7,12 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
     // Garante que o token seja carregado antes de verificar o estado de login
     tokenStore.loadTokenFromStorage();
-
-    if (!loggedIn.value) {
+    //console.log("Estado de loggedIn após carregar o token:", loggedIn.value);
+    if (loggedIn.value === false) {
+        
         return navigateTo('/auth/login');
+        
     }
+    //console.log("Auth: Estado de loggedIn após carregar o token:", loggedIn.value);
+    
 });

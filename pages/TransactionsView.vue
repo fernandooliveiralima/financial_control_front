@@ -7,7 +7,8 @@ definePageMeta({
 
 <template>
     <div>
-        Transactions View
+      Transactions View
+      <TransactionsList/>
     </div>
 </template>
 

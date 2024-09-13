@@ -1,18 +1,9 @@
-<script setup lang="ts">
-
-</script>
-
+<!-- default.vue -->
 <template>
     <div>
-        <HeaderC/>
-
-            <slot/>
-            
-        <MainC/>
-        
+      <HeaderC/>
+      <slot/>
+      <MainC/>
     </div>
-</template>
-
-<style scoped>
-
-</style>
+  </template>
+  

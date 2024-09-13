@@ -5,22 +5,22 @@ export const useAuthStore = defineStore('authStore', () => {
     const tokenStoreInstance = useTokenStore();
     const { userToken } = storeToRefs(tokenStoreInstance);
 
-    const userRegister = async (formDataRegister) => {
+    const userRegister = async (formDataRegister: any) => {
         try {
-            const response = await $fetch('http://127.0.0.1:8000/api/register', {
+            const response: any = await $fetch('http://127.0.0.1:8000/api/register', {
                 method: 'POST',
                 body: { ...formDataRegister }
             });
             tokenStoreInstance.setToken(response.token);
             console.log('response', response);
-        } catch (error) {
+        } catch (error: any) {
             console.log('error', error.data);
         }
     };
 
-    const userLogin = async (formDataLogin) => {
+    const userLogin = async (formDataLogin: any) => {
         try {
-            const response = await $fetch('http://127.0.0.1:8000/api/login', {
+            const response: any = await $fetch('http://127.0.0.1:8000/api/login', {
                 method: 'POST',
                 body: { ...formDataLogin }
             });
