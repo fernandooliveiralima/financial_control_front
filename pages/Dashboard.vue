@@ -17,5 +17,6 @@ onMounted(() => {
 <template>
   <div>
     <FormTransactionsC></FormTransactionsC>
+    <DoughnutChartC></DoughnutChartC>
   </div>
 </template>

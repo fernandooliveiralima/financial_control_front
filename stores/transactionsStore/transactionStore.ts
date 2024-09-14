@@ -72,9 +72,13 @@ export const useTransactionStore = defineStore('transactionStore', () => {
     
     watch([containerAllTransactions, transaction_field_date], ()=>{
         filteredList.value = filterListByTime(transaction_field_date.value, containerAllTransactions.value);
-        console.log('monitorando transaction_field_date pelo watch da Store ->', transaction_field_date.value);
+        //console.log('watch incomes store ->', incomes.value);
     });
 
+    const transactionColor = (transaction: transactionType) => {
+        return Number(transaction.transaction_amount) > 0 ? 'income' : 'expense';
+    };
+    
     return {
 
         transaction_field_name,
@@ -82,6 +86,7 @@ export const useTransactionStore = defineStore('transactionStore', () => {
         transaction_field_category,
         transaction_field_amount,
         transaction_field_type,
+        
 
         total,
         filteredList,
@@ -93,6 +98,8 @@ export const useTransactionStore = defineStore('transactionStore', () => {
         totalTransactions,
         removeTransaction,
         formatAmounts,
-        filterListByTime
+        filterListByTime,
+        transactionColor
     };
+    
 });

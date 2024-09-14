@@ -12,17 +12,18 @@ const {
 
 
 
-watch([transaction_field_date], () => {
+watch([containerAllTransactions, filteredList], () => {
     //console.log('monitorando transaction_field_date pelo watch do componente', transaction_field_date.value);
     /* console.log(filteredList.value);
     console.log('monitorando amount pelo watch do componente', Number(transaction_field_amount.value)); */
+    //console.log('filteredList watch compononent', filteredList.value)
 });
 
 onMounted(() => {
     transactionStoreInstance.$patch({
         filteredList: transactionStoreInstance.filterListByTime(transaction_field_date.value, containerAllTransactions.value),
     });
-    console.log(filteredList.value);
+    //console.log(filteredList.value);
     //console.log('monitorando transactionColor pelo onMounted do componente');
 });
 </script>
@@ -50,12 +51,14 @@ onMounted(() => {
                 </thead>
                 <tbody>
                     <tr v-for="(iterator, index) in filteredList" :key="index">
+                        <!-- <td :class="Number(iterator.transaction_amount) > 0 ? 'income' : 'expense' ">{{ iterator.transaction_amount }}</td> -->
                         <td>{{ iterator.id }}</td>
                         <td>{{ iterator.transaction_name }}</td>
                         <td>{{ iterator.transaction_date }}</td>
                         <td>{{ iterator.transaction_category }}</td>
-                        <td :class="Number(iterator.transaction_amount) > 0 ? 'income' : 'expense' ">{{ iterator.transaction_amount }}</td>
-                        <td :class="Number(iterator.transaction_amount) > 0 ? 'income' : 'expense' ">{{ iterator.transaction_type }}</td>
+                        
+                        <td :class=" transactionStoreInstance.transactionColor(iterator)">{{ iterator.transaction_amount }}</td>
+                        <td :class=" transactionStoreInstance.transactionColor(iterator)">{{ iterator.transaction_type }}</td>
                         <td>
                             <button @click="transactionStoreInstance.removeTransaction(iterator.id)">Remover</button>
                         </td>
