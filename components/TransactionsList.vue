@@ -37,7 +37,7 @@ onMounted(() => {
 
         <div class="table-container">
             <table>
-            
+
                 <thead>
                     <tr>
                         <th scope="col">Transaction Id</th>
@@ -56,11 +56,28 @@ onMounted(() => {
                         <td>{{ iterator.transaction_name }}</td>
                         <td>{{ iterator.transaction_date }}</td>
                         <td>{{ iterator.transaction_category }}</td>
-                        
-                        <td :class=" transactionStoreInstance.transactionColor(iterator)">{{ iterator.transaction_amount }}</td>
-                        <td :class=" transactionStoreInstance.transactionColor(iterator)">{{ iterator.transaction_type }}</td>
+
+                        <td :class="transactionStoreInstance.transactionColor(iterator)">
+                            <strong>
+                                {{ transactionStoreInstance.formatAmounts(Number(iterator.transaction_amount)) }}
+                            </strong>
+                        </td>
+
+                        <td :class="transactionStoreInstance.transactionColor(iterator)">
+                            <strong>
+                                {{ iterator.transaction_type }}
+                            </strong>
+                        </td>
                         <td>
-                            <button @click="transactionStoreInstance.removeTransaction(iterator.id)">Remover</button>
+                            <div class="btn-actions">
+                                <button 
+                                    class="remove-btn"
+                                    @click="transactionStoreInstance.removeTransaction(iterator.id)">
+                                    Remover
+                                </button>
+
+                                <button class="edit-btn">Editar</button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -76,18 +93,33 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
-.income{
+.income {
     color: green;
 }
-.expense{
+
+.expense {
     color: crimson;
 }
 
-.table-container{
+.table-container {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.btn-actions{
+    height: 4.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.remove-btn{
+    color: crimson;
+}
+.edit-btn{
+    color: cornflowerblue;
 }
 
 caption {
