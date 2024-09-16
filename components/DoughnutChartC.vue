@@ -5,7 +5,7 @@ import { ref, onMounted, watch } from 'vue';
 import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
 
 const transactionStoreInstance = useTransactionStore();
-const { containerAllTransactions, incomes, expenses } = storeToRefs(transactionStoreInstance);
+const { containerAllTransactions, filteredList, incomes, expenses } = storeToRefs(transactionStoreInstance);
 
 const myChart = ref<HTMLCanvasElement | null>(null);
 let doughnutChart: Chart<"doughnut", number[], string> | null = null;
@@ -20,7 +20,7 @@ const createChart = () => {
             data: {
                 labels: ['Income', 'Expense'],
                 datasets: [{
-                    data: [Number(incomes.value), Number(expenses.value)],
+                    data: [0, 0],  // Inicializando com valores padrão
                     borderWidth: 0,
                     hoverOffset: 5,
                     backgroundColor: ['green', 'crimson'],
@@ -34,22 +34,41 @@ const createChart = () => {
     }
 };
 
-const updateDoughnuthart = () => {
+/* const updateDoughnutChart = () => {
     if (doughnutChart) {
         // Atualiza os dados de receita e despesa no gráfico
         doughnutChart.data.datasets[0].data = [Number(incomes.value), Number(expenses.value)];
         doughnutChart.update();
     }
+}; */
+
+const updateDoughnutChart = () => {
+    if (doughnutChart) {
+        let totalIncome = 0;
+        let totalExpense = 0;
+
+        filteredList.value.forEach(transaction => {
+            if (Number(transaction.transaction_amount) > 0) {
+                totalIncome += Number(transaction.transaction_amount);
+            } else {
+                totalExpense += Math.abs(Number(transaction.transaction_amount));
+            }
+        });
+
+        doughnutChart.data.datasets[0].data = [totalIncome, totalExpense];
+        doughnutChart.update();
+    }
 };
 
-watch([incomes, expenses], () => {
-    updateDoughnuthart();
+
+watch([filteredList, incomes, expenses], () => {
+    updateDoughnutChart();
 });
 
 
 onMounted(() => {
     createChart();
-    updateDoughnuthart();
+    updateDoughnutChart();
 });
 </script>
 

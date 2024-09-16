@@ -14,7 +14,7 @@ let lineChart: Chart<"line", number[], string> | null = null;
 
 const createLineChart = () => {
     if (myChart.value) {
-        let allTransactions = [...containerAllTransactions.value];
+        let allTransactions = [...filteredList.value];
         allTransactions.sort((a, b) => Number(new Date(a.transaction_date)) - Number(new Date(b.transaction_date)));
 
         let totalAmount = ref(0);
@@ -76,7 +76,7 @@ const createLineChart = () => {
 
 }
 
-watch([total, incomes, expenses], () => {
+watch([filteredList, total, incomes, expenses], () => {
     createLineChart();
     console.log('incomes ->', incomes.value);
     console.log('expenses ->', expenses.value);

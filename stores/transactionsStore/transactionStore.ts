@@ -21,7 +21,12 @@ export const useTransactionStore = defineStore('transactionStore', () => {
     const transaction_field_type = ref('income');
 
     // Definindo um objeto reativo que contém um array de transactionType
-    let containerAllTransactions = ref< Array<transactionType> >([]);
+    let containerAllTransactions = ref< Array<transactionType> >([
+        {id: 12, transaction_name: 'conta', transaction_date:'2023-04-16', transaction_category: '', transaction_amount: -235, transaction_type: 'expense'},
+        {id: 13, transaction_name: 'refeição', transaction_date:'2023-02-10', transaction_category: '', transaction_amount: -150, transaction_type: 'expense'},
+        {id: 14, transaction_name: 'salario', transaction_date:'2024-04-16', transaction_category: '', transaction_amount: 1700, transaction_type: 'income'},
+        {id: 15, transaction_name: 'freela', transaction_date:'2024-06-22', transaction_category: '', transaction_amount: 560, transaction_type: 'income'}
+    ]);
 
     
 
