@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import dayjs from 'dayjs';
-
-
 import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
 
 const transactionStoreInstance = useTransactionStore();
 const {
     containerAllTransactions,
     filteredList,
-
     transaction_field_name,
     transaction_field_date,
     transaction_field_category,
@@ -22,7 +19,7 @@ let countId = ref(0);
 
 const saveTransaction = () => {
     if (!transaction_field_name.value && !transaction_field_amount.value) {
-        alert('preencha os campos');
+        alert('Preencha os campos');
         return;
     } else if (transaction_field_type.value === 'expense' && transaction_field_amount.value) {
         transaction_field_amount.value *= -1;
@@ -35,16 +32,17 @@ const saveTransaction = () => {
         transaction_category: transaction_field_category.value,
         transaction_amount: transaction_field_amount.value,
         transaction_type: transaction_field_type.value
-    }
+    };
+
     transactionStoreInstance.addTransactions(transaction);
 
+    // Limpar o formulário
     transaction_field_name.value = '';
     transaction_field_amount.value = undefined;
     transaction_field_type.value = 'income';
-}
-
-
+};
 </script>
+
 
 <template>
     <div>
