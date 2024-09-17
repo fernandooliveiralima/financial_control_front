@@ -1,37 +1,40 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import dayjs from 'dayjs';
-import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
+/* Pinia Imports */
+    import { storeToRefs } from 'pinia';
+    import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
+/* Pinia Imports */
 
-const transactionStoreInstance = useTransactionStore();
-const { formAddTransactions } = storeToRefs(transactionStoreInstance);
+/* Variables Pinia */
+    const transactionStoreInstance = useTransactionStore();
+    const { formAddTransactions } = storeToRefs(transactionStoreInstance);
+/* Variables Pinia */
 
-const dayjsInstance = ref(dayjs());
+/* Action Save Transaction */
+    const saveTransaction = () => {
+        if (!formAddTransactions.value.transaction_name && !formAddTransactions.value.transaction_amount) {
+            alert('Preencha os campos');
+            return;
+        } else if (formAddTransactions.value.transaction_type === 'expense' && formAddTransactions.value.transaction_amount) {
+            formAddTransactions.value.transaction_amount *= -1;
+        }
 
-const saveTransaction = () => {
-    if (!formAddTransactions.value.transaction_name && !formAddTransactions.value.transaction_amount) {
-        alert('Preencha os campos');
-        return;
-    } else if (formAddTransactions.value.transaction_type === 'expense' && formAddTransactions.value.transaction_amount) {
-        formAddTransactions.value.transaction_amount *= -1;
-    }
+        const transaction = {
+            id: formAddTransactions.value.id++,
+            transaction_name: formAddTransactions.value.transaction_name,
+            transaction_date: formAddTransactions.value.transaction_date,
+            transaction_category: formAddTransactions.value.transaction_category,
+            transaction_amount: formAddTransactions.value.transaction_amount,
+            transaction_type: formAddTransactions.value.transaction_type
+        };
 
-    const transaction = {
-        id: formAddTransactions.value.id++,
-        transaction_name: formAddTransactions.value.transaction_name,
-        transaction_date: formAddTransactions.value.transaction_date,
-        transaction_category: formAddTransactions.value.transaction_category,
-        transaction_amount: formAddTransactions.value.transaction_amount,
-        transaction_type: formAddTransactions.value.transaction_type
+        transactionStoreInstance.addTransactions(transaction);
+
+        // Limpar o formulário
+        formAddTransactions.value.transaction_name = '';
+        formAddTransactions.value.transaction_amount = undefined;
+        formAddTransactions.value.transaction_type = 'income';
     };
-
-    transactionStoreInstance.addTransactions(transaction);
-
-    // Limpar o formulário
-    formAddTransactions.value.transaction_name = '';
-    formAddTransactions.value.transaction_amount = undefined;
-    formAddTransactions.value.transaction_type = 'income';
-};
+/* Action Save Transaction */
 </script>
 
 

@@ -117,7 +117,7 @@ export const useTransactionStore = defineStore('transactionStore', () => {
 
     
     /* Actions to Work With Dates, Values, Colors */
-        const formatDate = (date: string)=>{
+        const formatDate = (date: string) => {
             return dayjs(date).locale('en-us').format('DD-MMMM-YYYY');
         }
 
@@ -126,7 +126,7 @@ export const useTransactionStore = defineStore('transactionStore', () => {
         };
 
         const updateFilteredList = () => {
-            filteredList.value = filterListByTime(formAddTransactions.transaction_date, containerAllTransactions.value);
+            return filteredList.value = filterListByTime(formAddTransactions.transaction_date, containerAllTransactions.value);
         };
 
         

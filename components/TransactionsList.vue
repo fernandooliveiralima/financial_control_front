@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
-import { storeToRefs } from 'pinia';
+/* Pinia Imports */
+    import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
+    import { storeToRefs } from 'pinia';
+/* Pinia Imports */
 
-import dayjs from 'dayjs';
+/* Variables Pinia */
+    const transactionStoreInstance = useTransactionStore();
+    const { filteredList, formAddTransactions } = storeToRefs(transactionStoreInstance);
+/* Variables Pinia */
 
-const dayjsInstance = dayjs();
-
-const transactionStoreInstance = useTransactionStore();
-const { filteredList, formAddTransactions } = storeToRefs(transactionStoreInstance);
-
-onMounted(() => {
-    transactionStoreInstance.updateFilteredList(); // Garante a atualização inicial
-});
+/* onMounted() */
+    onMounted(() => {
+        transactionStoreInstance.updateFilteredList(); // Garante a atualização inicial
+    });
+/* onMounted() */
 </script>
 
 <template>
@@ -73,7 +75,7 @@ onMounted(() => {
         </div>
 
         <!-- Formulário para Edição -->
-        <div v-if="transactionStoreInstance.currentTransaction">
+        <form @submit.prevent="transactionStoreInstance.updateTransaction()" v-if="transactionStoreInstance.currentTransaction">
             <h3>Edit Transaction</h3>
             <div>
                 <label for="name">Name</label>
@@ -98,8 +100,8 @@ onMounted(() => {
                     <option value="expense">Expense</option>
                 </select>
             </div>
-            <button @click="transactionStoreInstance.updateTransaction">Save Changes</button>
-        </div>
+            <input type="submit" value="Update Transaction">
+        </form>
     </div>
 </template>
 

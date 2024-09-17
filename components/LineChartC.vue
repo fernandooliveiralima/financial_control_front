@@ -1,83 +1,100 @@
 <script setup lang="ts">
-import { Chart } from 'chart.js/auto';
-import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
-import { storeToRefs } from 'pinia';
+/* Pinia Imports */
+    import { storeToRefs } from 'pinia';
+    import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
+/* Pinia Imports */
 
-const transactionsStore = useTransactionStore();
-const { filteredList, total, incomes, expenses } = storeToRefs(transactionsStore);
+/* External Libraries */
+    import { Chart } from 'chart.js/auto';
+/* External Libraries */
 
-const myChart = ref<HTMLCanvasElement | null>(null);
-let lineChart: Chart<"line", number[], string> | null = null;
+/* Variables Transactions */
+    const transactionsStoreinstance = useTransactionStore();
+    const { filteredList, total } = storeToRefs(transactionsStoreinstance);
+/* Variables Transactions */
 
-const createLineChart = () => {
-    if (myChart.value) {
-        const ctx = myChart.value;
-        lineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [], // Inicialmente vazio
-                datasets: [{
-                    label: 'Behavior Transactions',
-                    data: [],
-                    fill: false,
-                    backgroundColor: [],
-                    tension: 0.1,
-                    borderColor: []
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        ticks: { display: false },
-                        grid: { color: '#272234' }
-                    },
-                    x: { grid: { color: '#272234' } }
+/* Variables ChartJs */
+    const myChart = ref<HTMLCanvasElement | null>(null);
+    let lineChart: Chart<"line", number[], string> | null = null;
+/* Variables ChartJs */
+
+/* Function Create Line Chart */
+    const createLineChart = () => {
+        if (myChart.value) {
+            const ctx = myChart.value;
+            lineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [], // Inicialmente vazio
+                    datasets: [{
+                        label: 'Behavior Transactions',
+                        data: [],
+                        fill: false,
+                        backgroundColor: [],
+                        tension: 0.1,
+                        borderColor: []
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            ticks: { display: false },
+                            grid: { color: '#272234' }
+                        },
+                        x: { grid: { color: '#272234' } }
+                    }
                 }
-            }
-        });
+            });
+        }
     }
-}
+/* Function Create Line Chart */
 
-const updateLineChart = () => {
-    if (lineChart && filteredList.value) {
-        let allTransactions = [...filteredList.value];
-        allTransactions.sort((a, b) => Number(new Date(a.transaction_date)) - Number(new Date(b.transaction_date)));
+/* Function Update Doughnut Chart */
+    const updateLineChart = () => {
+        if (lineChart && filteredList.value) {
+            let allTransactions = [...filteredList.value];
+            allTransactions.sort((a, b) => Number(new Date(a.transaction_date)) - Number(new Date(b.transaction_date)));
 
-        let totalAmount = 0;
-        let datesTransactions: Array<string> = [];
-        let amountsTransactions: Array<number> = [];
-        let borderColorGraph: Array<string> = [];
+            let totalAmount = 0;
+            let datesTransactions: Array<string> = [];
+            let amountsTransactions: Array<number> = [];
+            let borderColorGraph: Array<string> = [];
 
-        allTransactions.forEach(transaction => {
-            datesTransactions.push(transaction.transaction_date);
-            totalAmount += Number(transaction.transaction_amount);
-            amountsTransactions.push(totalAmount);
+            allTransactions.forEach(transaction => {
+                datesTransactions.push(transaction.transaction_date);
+                totalAmount += Number(transaction.transaction_amount);
+                amountsTransactions.push(totalAmount);
 
-            // Define a cor da linha com base no tipo de transação
-            if (transaction.transaction_type === 'income') {
-                borderColorGraph.push('green');
-            } else if (transaction.transaction_type === 'expense') {
-                borderColorGraph.push('red');
-            }
-        });
+                // Define a cor da linha com base no tipo de transação
+                if (transaction.transaction_type === 'income') {
+                    borderColorGraph.push('green');
+                } else if (transaction.transaction_type === 'expense') {
+                    borderColorGraph.push('red');
+                }
+            });
 
-        lineChart.data.labels = datesTransactions;
-        lineChart.data.datasets[0].data = amountsTransactions;
-        lineChart.data.datasets[0].borderColor = borderColorGraph;
+            lineChart.data.labels = datesTransactions;
+            lineChart.data.datasets[0].data = amountsTransactions;
+            lineChart.data.datasets[0].borderColor = borderColorGraph;
 
-        lineChart.update();
+            lineChart.update();
+        }
     }
-}
+/* Function Update Doughnut Chart */
 
-watch([filteredList, total, incomes, expenses], () => {
-    updateLineChart();
-});
+/* watch() */
+    watch([filteredList, total, transactionsStoreinstance.incomes(), transactionsStoreinstance.expenses()], () => {
+        updateLineChart();
+    });
+/* watch() */
 
-onMounted(() => {
-    createLineChart();
-    updateLineChart();
-});
+/* onMounted() */
+    onMounted(() => {
+        createLineChart();
+        updateLineChart();
+    });
+/* onMounted() */
 </script>
 
 <template>

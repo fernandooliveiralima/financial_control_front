@@ -1,75 +1,89 @@
 <script setup lang="ts">
-import { Chart } from 'chart.js/auto';
-import { storeToRefs } from 'pinia';
-import { ref, onMounted, watch } from 'vue';
-import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
+/* Vue Imports */
+    
+/* Vue Imports */
 
-const transactionStoreInstance = useTransactionStore();
-const { containerAllTransactions, filteredList, incomes, expenses } = storeToRefs(transactionStoreInstance);
+/* Pinia Imports */
+    import { storeToRefs } from 'pinia';
+    import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
+/* Pinia Imports */
 
-const myChart = ref<HTMLCanvasElement | null>(null);
-let doughnutChart: Chart<"doughnut", number[], string> | null = null;
+/* External Libraries */
+    import { Chart } from 'chart.js/auto';
+/* External Libraries */
 
-const createChart = () => {
-    if (myChart.value && !doughnutChart) {
-        const ctx = myChart.value.getContext('2d');
-        if (!ctx) return;
+/* Variables Pinia */
+    const transactionStoreInstance = useTransactionStore();
+/* Variables Pinia */
 
-        doughnutChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Income', 'Expense'],
-                datasets: [{
-                    data: [0, 0],  // Inicializando com valores padrão
-                    borderWidth: 0,
-                    hoverOffset: 5,
-                    backgroundColor: ['green', 'crimson'],
-                }]
-            },
-            options: {
-                responsive: true,
-                cutout: 90
-            }
-        });
-    }
-};
+/* Variables Transactions */
+    const { filteredList } = storeToRefs(transactionStoreInstance);
+/* Variables Transactions */
 
-/* const updateDoughnutChart = () => {
-    if (doughnutChart) {
-        // Atualiza os dados de receita e despesa no gráfico
-        doughnutChart.data.datasets[0].data = [Number(incomes.value), Number(expenses.value)];
-        doughnutChart.update();
-    }
-}; */
+/* Variables ChartJs */
+    const myChart = ref<HTMLCanvasElement | null>(null);
+    let doughnutChart: Chart<"doughnut", number[], string> | null = null;
+/* Variables ChartJs */
 
-const updateDoughnutChart = () => {
-    if (doughnutChart) {
-        let totalIncome = 0;
-        let totalExpense = 0;
+/* Function Create Doughnut Chart */
+    const createChart = () => {
+        if (myChart.value && !doughnutChart) {
+            const ctx = myChart.value.getContext('2d');
+            if (!ctx) return;
 
-        filteredList.value.forEach(transaction => {
-            if (Number(transaction.transaction_amount) > 0) {
-                totalIncome += Number(transaction.transaction_amount);
-            } else {
-                totalExpense += Math.abs(Number(transaction.transaction_amount));
-            }
-        });
-
-        doughnutChart.data.datasets[0].data = [totalIncome, totalExpense];
-        doughnutChart.update();
-    }
-};
+            doughnutChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Income', 'Expense'],
+                    datasets: [{
+                        data: [0, 0],  // Inicializando com valores padrão
+                        borderWidth: 0,
+                        hoverOffset: 5,
+                        backgroundColor: ['green', 'crimson'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: 90
+                }
+            });
+        }
+    };
+/* Function Create Doughnut Chart */
 
 
-watch([filteredList, incomes, expenses], () => {
-    updateDoughnutChart();
-});
+/* Function Update Doughnut Chart */
+    const updateDoughnutChart = () => {
+        if (doughnutChart) {
+            let totalIncome = 0;
+            let totalExpense = 0;
 
+            filteredList.value.forEach(transaction => {
+                if (Number(transaction.transaction_amount) > 0) {
+                    totalIncome += Number(transaction.transaction_amount);
+                } else {
+                    totalExpense += Math.abs(Number(transaction.transaction_amount));
+                }
+            });
 
-onMounted(() => {
-    createChart();
-    updateDoughnutChart();
-});
+            doughnutChart.data.datasets[0].data = [totalIncome, totalExpense];
+            doughnutChart.update();
+        }
+    };
+/* Function Update Doughnut Chart */
+
+/* watch() */
+    watch([filteredList, transactionStoreInstance.incomes(), transactionStoreInstance.expenses()], () => {
+        updateDoughnutChart();
+    });
+/* watch() */
+
+/* onMounted() */
+    onMounted(() => {
+        createChart();
+        updateDoughnutChart();
+    });
+/* onMounted() */
 </script>
 
 <template>
