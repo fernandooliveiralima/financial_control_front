@@ -17,7 +17,9 @@
 /* Variables Pinia */
 
 /* Variables Transactions */
-    const { filteredList } = storeToRefs(transactionStoreInstance);
+    const {calculatePercentual, filteredList } = storeToRefs(transactionStoreInstance);
+    const incomes = ref(transactionStoreInstance.incomes());
+    const expenses = ref(transactionStoreInstance.expenses());
 /* Variables Transactions */
 
 /* Variables ChartJs */
@@ -73,8 +75,9 @@
 /* Function Update Doughnut Chart */
 
 /* watch() */
-    watch([filteredList, transactionStoreInstance.incomes(), transactionStoreInstance.expenses()], () => {
+    watch([filteredList, incomes, expenses], () => {
         updateDoughnutChart();
+        console.log('watch() calculatePercentual ->', parseInt(`${calculatePercentual.value}`),'%');
     });
 /* watch() */
 
@@ -82,6 +85,7 @@
     onMounted(() => {
         createChart();
         updateDoughnutChart();
+        console.log('onMounted() calculatePercentual ->', parseInt(`${calculatePercentual.value}`),'%');
     });
 /* onMounted() */
 </script>
@@ -90,6 +94,10 @@
     <div>
         <section class="doughnut-chart">
             <div class="chart">
+                <div class="percentual">
+                    <PercentualValueC></PercentualValueC>
+                    <span>%</span>
+                </div>
                 <canvas ref="myChart"></canvas>
             </div>
         </section>
@@ -103,6 +111,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.percentual{
+    position: absolute;
+    top: 42%;
+    font-size: 2rem;
+    font-weight: 600;
+    display: flex;
 }
 
 .chart {

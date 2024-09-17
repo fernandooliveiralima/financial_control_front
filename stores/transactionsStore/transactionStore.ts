@@ -1,5 +1,5 @@
 /* Vue Imports */
-    import { reactive, ref, watch } from 'vue';
+    import {computed, reactive, ref, watch } from 'vue';
 /* Vue Imports */
 
 /* Pinia Imports */
@@ -29,7 +29,7 @@ export const useTransactionStore = defineStore('transactionStore', () => {
             id: 0,
             transaction_name: '',
             transaction_date: dayjsInstance.value.format('YYYY-MM-DD'),
-            transaction_category: '',
+            transaction_category: 'General',
             transaction_amount: undefined,
             transaction_type: 'income',
         });
@@ -133,6 +133,15 @@ export const useTransactionStore = defineStore('transactionStore', () => {
         const transactionColor = (transaction: transactionType) => {
             return Number(transaction.transaction_amount) > 0 ? 'income' : 'expense';
         };
+
+        const calculatePercentual = computed(() => {
+            if (incomes() === 0) { return 0; } // Evita divisão por 0
+            
+            const percentual = ( Number(incomes()) - Math.abs(Number(expenses())) ) / Number(incomes()) * 100;
+
+            // Garantir que o valor esteja entre 0 e 100
+            return Math.max(0, Math.min(100, parseInt(`${percentual}`) ));
+        });
     /* Actions to Work With Dates, Values, Colors */
     
     
@@ -147,6 +156,7 @@ export const useTransactionStore = defineStore('transactionStore', () => {
         containerAllTransactions,
         formAddTransactions,
         currentTransaction,
+        calculatePercentual,
         
         incomes,
         expenses,

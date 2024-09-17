@@ -8,9 +8,15 @@
     import { Chart } from 'chart.js/auto';
 /* External Libraries */
 
+/* Variables Pinia */
+    const transactionStoreInstance = useTransactionStore();
+/* Variables Pinia */
+
 /* Variables Transactions */
     const transactionsStoreinstance = useTransactionStore();
     const { filteredList, total } = storeToRefs(transactionsStoreinstance);
+    const incomes = ref(transactionStoreInstance.incomes());
+    const expenses = ref(transactionStoreInstance.expenses());
 /* Variables Transactions */
 
 /* Variables ChartJs */
@@ -84,7 +90,7 @@
 /* Function Update Doughnut Chart */
 
 /* watch() */
-    watch([filteredList, total, transactionsStoreinstance.incomes(), transactionsStoreinstance.expenses()], () => {
+    watch([filteredList, total, incomes, expenses], () => {
         updateLineChart();
     });
 /* watch() */
