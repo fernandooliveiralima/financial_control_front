@@ -9,8 +9,7 @@ const transactionStoreInstance = useTransactionStore();
 const {
     containerAllTransactions,
     filteredList,
-    transaction_field_date,
-    transaction_field_amount
+    formAddTransactions
 
 } = storeToRefs(transactionStoreInstance);
 
@@ -24,7 +23,7 @@ onMounted(() => {
   tokenStoreInstance.loadTokenFromStorage();
 
   transactionStoreInstance.$patch({
-        filteredList: transactionStoreInstance.filterListByTime(transaction_field_date.value, containerAllTransactions.value),
+        filteredList: transactionStoreInstance.filterListByTime(formAddTransactions.value.transaction_date, containerAllTransactions.value),
     });
 });
 </script>

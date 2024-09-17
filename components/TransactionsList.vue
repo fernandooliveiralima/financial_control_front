@@ -1,30 +1,16 @@
 <script setup lang="ts">
 import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
+import { storeToRefs } from 'pinia';
+
+import dayjs from 'dayjs';
+
+const dayjsInstance = dayjs();
 
 const transactionStoreInstance = useTransactionStore();
-const {
-    containerAllTransactions,
-    filteredList,
-    transaction_field_date,
-    transaction_field_amount
-
-} = storeToRefs(transactionStoreInstance);
-
-
-
-watch([containerAllTransactions, filteredList], () => {
-    //console.log('monitorando transaction_field_date pelo watch do componente', transaction_field_date.value);
-    /* console.log(filteredList.value);
-    console.log('monitorando amount pelo watch do componente', Number(transaction_field_amount.value)); */
-    //console.log('filteredList watch compononent', filteredList.value)
-});
+const { filteredList, formAddTransactions } = storeToRefs(transactionStoreInstance);
 
 onMounted(() => {
-    transactionStoreInstance.$patch({
-        filteredList: transactionStoreInstance.filterListByTime(transaction_field_date.value, containerAllTransactions.value),
-    });
-    //console.log(filteredList.value);
-    //console.log('monitorando transactionColor pelo onMounted do componente');
+    transactionStoreInstance.updateFilteredList(); // Garante a atualização inicial
 });
 </script>
 
@@ -32,12 +18,11 @@ onMounted(() => {
     <div>
         <div class="date-section base-column">
             <label for="description">Date</label>
-            <input type="date" v-model="transaction_field_date" />
+            <input type="date" v-model="formAddTransactions.transaction_date" />
         </div>
 
         <div class="table-container">
             <table>
-
                 <thead>
                     <tr>
                         <th scope="col">Transaction Id</th>
@@ -51,7 +36,6 @@ onMounted(() => {
                 </thead>
                 <tbody>
                     <tr v-for="(iterator, index) in filteredList" :key="index">
-                        <!-- <td :class="Number(iterator.transaction_amount) > 0 ? 'income' : 'expense' ">{{ iterator.transaction_amount }}</td> -->
                         <td>{{ iterator.id }}</td>
                         <td>{{ iterator.transaction_name }}</td>
                         <td>{{ iterator.transaction_date }}</td>
@@ -76,21 +60,49 @@ onMounted(() => {
                                     Remover
                                 </button>
 
-                                <button class="edit-btn">Editar</button>
+                                <button 
+                                    class="edit-btn"
+                                    @click="transactionStoreInstance.editTransaction(iterator)"> <!-- Iniciar Edição -->
+                                    Editar
+                                </button>
                             </div>
                         </td>
                     </tr>
                 </tbody>
-                <!-- <tfoot>
-                    <tr>
-                        <th scope="row" colspan="2">Average age</th>
-                        <td>33</td>
-                    </tr>
-                </tfoot> -->
             </table>
+        </div>
+
+        <!-- Formulário para Edição -->
+        <div v-if="transactionStoreInstance.currentTransaction">
+            <h3>Edit Transaction</h3>
+            <div>
+                <label for="name">Name</label>
+                <input type="text" v-model="transactionStoreInstance.currentTransaction.transaction_name" />
+            </div>
+            <div>
+                <label for="date">Date</label>
+                <input type="date" v-model="transactionStoreInstance.currentTransaction.transaction_date" />
+            </div>
+            <div>
+                <label for="category">Category</label>
+                <input type="text" v-model="transactionStoreInstance.currentTransaction.transaction_category" />
+            </div>
+            <div>
+                <label for="amount">Amount</label>
+                <input type="number" v-model="transactionStoreInstance.currentTransaction.transaction_amount" />
+            </div>
+            <div>
+                <label for="type">Type</label>
+                <select v-model="transactionStoreInstance.currentTransaction.transaction_type">
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                </select>
+            </div>
+            <button @click="transactionStoreInstance.updateTransaction">Save Changes</button>
         </div>
     </div>
 </template>
+
 
 <style scoped>
 .income {
