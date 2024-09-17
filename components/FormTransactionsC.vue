@@ -7,7 +7,6 @@ const transactionStoreInstance = useTransactionStore();
 const { formAddTransactions } = storeToRefs(transactionStoreInstance);
 
 const dayjsInstance = ref(dayjs());
-let countId = ref(0);
 
 const saveTransaction = () => {
     if (!formAddTransactions.value.transaction_name && !formAddTransactions.value.transaction_amount) {

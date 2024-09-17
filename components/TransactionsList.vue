@@ -38,7 +38,7 @@ onMounted(() => {
                     <tr v-for="(iterator, index) in filteredList" :key="index">
                         <td>{{ iterator.id }}</td>
                         <td>{{ iterator.transaction_name }}</td>
-                        <td>{{ iterator.transaction_date }}</td>
+                        <td>{{ transactionStoreInstance.formatDate(iterator.transaction_date) }}</td>
                         <td>{{ iterator.transaction_category }}</td>
 
                         <td :class="transactionStoreInstance.transactionColor(iterator)">
