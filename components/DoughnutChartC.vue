@@ -115,7 +115,7 @@
 .percentual{
     position: absolute;
     top: 42%;
-    font-size: 2rem;
+    font-size: 3.3rem;
     font-weight: 600;
     
 }

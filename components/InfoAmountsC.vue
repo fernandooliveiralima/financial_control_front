@@ -24,7 +24,7 @@ const {  } = storeToRefs(transactionStoreInstance);
 
 <style scoped>
 .default-font-size{
-    font-size: 1.5rem;
+    font-size: 2rem;
 }
 
 .total{

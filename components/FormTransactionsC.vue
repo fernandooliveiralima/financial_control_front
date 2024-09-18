@@ -13,9 +13,10 @@
 
 /* Action Save Transaction */
     const saveTransaction = () => {
-        if (!formAddTransactions.value.transaction_name && !formAddTransactions.value.transaction_amount) {
-            alert('Preencha os campos');
+        if (formAddTransactions.value.transaction_name === '' || formAddTransactions.value.transaction_amount === undefined) {
+            alert('Preencha todos os campos!');
             return;
+            
         } else if (formAddTransactions.value.transaction_type === 'expense' && formAddTransactions.value.transaction_amount) {
             formAddTransactions.value.transaction_amount *= -1;
         }

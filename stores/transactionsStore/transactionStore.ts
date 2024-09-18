@@ -25,8 +25,6 @@ export const useTransactionStore = defineStore('transactionStore', () => {
         const dayjsInstance = ref(dayjs());
     /* Variables dayjs() Library */
 
-    
-
     /* Variables Transactions */
         const total = ref(0);
 
@@ -41,14 +39,7 @@ export const useTransactionStore = defineStore('transactionStore', () => {
             transaction_type: 'income',
         });
 
-        let containerAllTransactions = ref< Array<transactionType> >([
-            /* {id: 12, transaction_name: 'conta', transaction_date: '2023-04-16', transaction_category: 'General', transaction_amount: -235, transaction_type: 'expense'},
-            {id: 13, transaction_name: 'refeição', transaction_date: '2023-02-10', transaction_category: 'fixed', transaction_amount: -150, transaction_type: 'expense'},
-            {id: 14, transaction_name: 'salario', transaction_date: '2024-04-16', transaction_category: 'fixed', transaction_amount: 1700, transaction_type: 'income'},
-            {id: 15, transaction_name: 'freela', transaction_date: '2024-06-22', transaction_category: 'General', transaction_amount: 560, transaction_type: 'income'} */
-        ]);
-
-        
+        let containerAllTransactions = ref< Array<transactionType> >([]);
     /* Variables Transactions */
 
     /* Variables Http */
@@ -83,6 +74,7 @@ export const useTransactionStore = defineStore('transactionStore', () => {
             
         };
 
+        //loadAllTransactions
         const loadAllTransactions = async () => {
             try {
                 const response: Array<transactionType> = await $fetch(`http://localhost:8000/api/transactions`, {
@@ -100,44 +92,60 @@ export const useTransactionStore = defineStore('transactionStore', () => {
             }
         }
 
-        //Update Transactions
-        const currentTransaction = ref<transactionType | null>(null); // Para armazenar a transação sendo editada
-    
-        const editTransaction = (transaction: transactionType) => {
-            currentTransaction.value = { ...transaction }; // Copiar a transação selecionada para edição
-        };
-    
-        // Update Transactions
-        const updateTransaction = async () => {
-            if (currentTransaction.value) {
-                try {
-                    const response: TransactionResponse = await $fetch(`http://localhost:8000/api/transactions/${currentTransaction.value.id}`, {
-                        method: 'PUT',
-                        body: currentTransaction.value,
-                        headers: {
-                            'Authorization': `Bearer ${userToken.value}`,
-                            'Accept': 'application/json'
-                        }
-                    });
-
-                    // Atualiza a lista local após sucesso
-                    const index = containerAllTransactions.value.findIndex(item => item.id === currentTransaction.value!.id);
-                    if (index !== -1) {
-                        containerAllTransactions.value[index] = { ...currentTransaction.value };
-                        updateFilteredList(); // Atualizar a lista filtrada
-                        currentTransaction.value = null; // Limpar após edição
+        /* Update Transactions */
+            //Update Transactions
+            const currentTransaction = ref<transactionType | null>(null); // Para armazenar a transação sendo editada
+        
+            const editTransaction = (transaction: transactionType) => {
+                currentTransaction.value = { ...transaction }; // Copiar a transação selecionada para edição
+            };
+        
+            // Update Transactions
+            // Update Transactions
+            const updateTransaction = async () => {
+                if (currentTransaction.value) {
+                    // Validação de acordo com o tipo de transação
+                    if (
+                        (currentTransaction.value.transaction_type === 'income' 
+                            && Number(currentTransaction.value.transaction_amount) < 0) ||
+                            
+                        (currentTransaction.value.transaction_type === 'expense' 
+                            && Number(currentTransaction.value.transaction_amount) > 0)
+                    ) {
+                        console.error('O valor da transação não condiz com o tipo.');
+                        return; // Impede a continuação da submissão se a validação falhar
                     }
 
-                    console.log('Transaction updated successfully:', response);
-                } catch (error) {
-                    console.error('Error updating transaction:', error);
+                    try {
+                        const response: TransactionResponse = await $fetch(`http://localhost:8000/api/transactions/${currentTransaction.value.id}`, {
+                            method: 'PUT',
+                            body: currentTransaction.value,
+                            headers: {
+                                'Authorization': `Bearer ${userToken.value}`,
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        // Atualiza a lista local após sucesso
+                        const index = containerAllTransactions.value.findIndex(item => item.id === currentTransaction.value!.id);
+                        if (index !== -1) {
+                            containerAllTransactions.value[index] = { ...currentTransaction.value };
+                            updateFilteredList(); // Atualizar a lista filtrada
+                            currentTransaction.value = null; // Limpar após edição
+                        }
+
+                        console.log('Transaction updated successfully:', response);
+                    } catch (error) {
+                        console.error('Error updating transaction:', error);
+                    }
                 }
-            }
-        };
+            };
+
+        /* Update Transactions */
+        
 
 
-        // Remove Transactions
-        // Remove Transactions
+    /* Remove Transactions */
         const removeTransaction = async (id: number) => {
             try {
                 await $fetch(`http://localhost:8000/api/transactions/${id}`, {
@@ -161,6 +169,9 @@ export const useTransactionStore = defineStore('transactionStore', () => {
                 console.error('Error removing transaction:', error);
             }
         };
+    /* Remove Transactions */
+
+        
 
     /* Actions Crud Transactions */
 

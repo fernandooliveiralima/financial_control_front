@@ -91,7 +91,11 @@
             </div>
             <div>
                 <label for="amount">Amount</label>
-                <input type="number" v-model="transactionStoreInstance.currentTransaction.transaction_amount" />
+                <input 
+                    step="0.01" 
+                    type="number" 
+                    placeholder="0,00" 
+                    v-model.number="transactionStoreInstance.currentTransaction.transaction_amount" />
             </div>
             <div>
                 <label for="type">Type</label>
