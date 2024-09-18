@@ -40,6 +40,8 @@ export const useTransactionStore = defineStore('transactionStore', () => {
             {id: 14, transaction_name: 'salario', transaction_date: '2024-04-16', transaction_category: 'fixed', transaction_amount: 1700, transaction_type: 'income'},
             {id: 15, transaction_name: 'freela', transaction_date: '2024-06-22', transaction_category: 'General', transaction_amount: 560, transaction_type: 'income'}
         ]);
+
+        
     /* Variables Transactions */
 
     /* Actions Crud Transactions */
@@ -136,12 +138,14 @@ export const useTransactionStore = defineStore('transactionStore', () => {
 
         const calculatePercentual = computed(() => {
             if (incomes() === 0) { return 0; } // Evita divisão por 0
-            
+
             const percentual = ( Number(incomes()) - Math.abs(Number(expenses())) ) / Number(incomes()) * 100;
 
             // Garantir que o valor esteja entre 0 e 100
             return Math.max(0, Math.min(100, parseInt(`${percentual}`) ));
         });
+
+        
     /* Actions to Work With Dates, Values, Colors */
     
     

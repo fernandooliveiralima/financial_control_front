@@ -9,16 +9,19 @@ const transactionStoreInstance = useTransactionStore();
 /* Variables Pinia */
 
 /* Variables Transactions */
-const {calculatePercentual } = storeToRefs(transactionStoreInstance);
+const { calculatePercentual } = storeToRefs(transactionStoreInstance);
 /* Variables Transactions */
+
 </script>
 
 
 <template>
-    <div>
-        {{ calculatePercentual }}
-    </div>
+    <ul>
+        <li>{{ calculatePercentual }}%</li>
+    </ul>
 </template>
 
 
-<style scoped></style>
+<style scoped>
+    
+</style>

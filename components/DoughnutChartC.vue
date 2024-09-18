@@ -96,7 +96,6 @@
             <div class="chart">
                 <div class="percentual">
                     <PercentualValueC></PercentualValueC>
-                    <span>%</span>
                 </div>
                 <canvas ref="myChart"></canvas>
             </div>
@@ -118,7 +117,7 @@
     top: 42%;
     font-size: 2rem;
     font-weight: 600;
-    display: flex;
+    
 }
 
 .chart {
