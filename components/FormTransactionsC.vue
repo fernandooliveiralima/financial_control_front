@@ -1,4 +1,6 @@
 <script setup lang="ts">
+
+
 /* Pinia Imports */
     import { storeToRefs } from 'pinia';
     import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';

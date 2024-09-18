@@ -14,12 +14,14 @@ definePageMeta({
   middleware: ["auth"]
 });
 
-onMounted(() => {
+onMounted( async () => {
   tokenStoreInstance.loadTokenFromStorage();
 
   transactionStoreInstance.$patch({
         filteredList: transactionStoreInstance.filterListByTime(formAddTransactions.value.transaction_date, containerAllTransactions.value),
     });
+
+    await transactionStoreInstance.loadAllTransactions();
 });
 </script>
 

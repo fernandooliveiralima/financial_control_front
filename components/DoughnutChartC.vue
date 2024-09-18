@@ -77,7 +77,7 @@
 /* watch() */
     watch([filteredList, incomes, expenses], () => {
         updateDoughnutChart();
-        console.log('watch() calculatePercentual ->', parseInt(`${calculatePercentual.value}`),'%');
+        
     });
 /* watch() */
 
@@ -85,7 +85,7 @@
     onMounted(() => {
         createChart();
         updateDoughnutChart();
-        console.log('onMounted() calculatePercentual ->', parseInt(`${calculatePercentual.value}`),'%');
+        
     });
 /* onMounted() */
 </script>

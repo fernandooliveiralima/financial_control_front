@@ -1,8 +1,16 @@
-<script setup>
+<script setup lang="ts">
+import { useTransactionStore } from '@/stores/transactionsStore/transactionStore';
+
+const transactionStoreInstance = useTransactionStore();
+
 definePageMeta({
   middleware: ["auth"]
   // or middleware: 'auth'
 })
+
+onMounted( async ()=>{
+  await transactionStoreInstance.loadAllTransactions();
+});
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 /* Vue Imports */
-    import {computed, reactive, ref, watch } from 'vue';
+    import { reactive, ref } from 'vue';
 /* Vue Imports */
 
 /* Pinia Imports */
@@ -10,8 +10,13 @@
     import dayjs from 'dayjs';
 /* External Libraries */
 
+/* Http Client Imports */
+    import { useTokenStore } from '@/stores/authStore/tokenStore';
+/* Http Client Imports */
+
 /* App Imports */
     import type { transactionType } from '@/types/transactions/transactionModel';
+    import type { TransactionResponse } from '@/types/asyncDataTypes/transactionDataModel';
     import { filterListByTime } from '@/composables/dateFilterComp';
 /* App Imports */
 
@@ -19,6 +24,8 @@ export const useTransactionStore = defineStore('transactionStore', () => {
     /* Variables dayjs() Library */
         const dayjsInstance = ref(dayjs());
     /* Variables dayjs() Library */
+
+    
 
     /* Variables Transactions */
         const total = ref(0);
@@ -35,22 +42,63 @@ export const useTransactionStore = defineStore('transactionStore', () => {
         });
 
         let containerAllTransactions = ref< Array<transactionType> >([
-            {id: 12, transaction_name: 'conta', transaction_date: '2023-04-16', transaction_category: 'General', transaction_amount: -235, transaction_type: 'expense'},
+            /* {id: 12, transaction_name: 'conta', transaction_date: '2023-04-16', transaction_category: 'General', transaction_amount: -235, transaction_type: 'expense'},
             {id: 13, transaction_name: 'refeição', transaction_date: '2023-02-10', transaction_category: 'fixed', transaction_amount: -150, transaction_type: 'expense'},
             {id: 14, transaction_name: 'salario', transaction_date: '2024-04-16', transaction_category: 'fixed', transaction_amount: 1700, transaction_type: 'income'},
-            {id: 15, transaction_name: 'freela', transaction_date: '2024-06-22', transaction_category: 'General', transaction_amount: 560, transaction_type: 'income'}
+            {id: 15, transaction_name: 'freela', transaction_date: '2024-06-22', transaction_category: 'General', transaction_amount: 560, transaction_type: 'income'} */
         ]);
 
         
     /* Variables Transactions */
 
+    /* Variables Http */
+        //const config = useRuntimeConfig();
+        const tokenStoreInstance = useTokenStore();
+        const { userToken } = storeToRefs(tokenStoreInstance);
+    /* Variables Http */
+
     /* Actions Crud Transactions */
 
         // Add Transactions
-        const addTransactions = (transaction: transactionType) => {
-            containerAllTransactions.value.unshift(transaction);
-            updateFilteredList();
+        const addTransactions = async (transaction: transactionType) => {
+
+            try {
+                const response: TransactionResponse = await $fetch(`http://localhost:8000/api/transactions`, {
+                    method: 'POST',
+                    body: transaction,
+                    headers: {
+                        'Authorization': `Bearer ${userToken.value}`,  
+                        'Accept': 'application/json'
+                    }
+                });
+
+                // Insira a transação no estado local
+                containerAllTransactions.value.unshift(response); // Atualiza a lista
+                updateFilteredList(); // Se houver uma função para filtrar as transações
+
+                console.log('Async Data', response);
+            } catch (error) {
+                console.log(error);
+            }
+            
         };
+
+        const loadAllTransactions = async () => {
+            try {
+                const response: Array<transactionType> = await $fetch(`http://localhost:8000/api/transactions`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${userToken.value}`,  
+                        'Accept': 'application/json'
+                    }
+                });
+
+                containerAllTransactions.value = response;
+                updateFilteredList();
+            } catch (error) {
+                console.log(error);
+            }
+        }
 
         //Update Transactions
         const currentTransaction = ref<transactionType | null>(null); // Para armazenar a transação sendo editada
@@ -165,6 +213,7 @@ export const useTransactionStore = defineStore('transactionStore', () => {
         incomes,
         expenses,
         addTransactions,
+        loadAllTransactions,
         totalTransactions,
         removeTransaction,
         formatAmounts,
