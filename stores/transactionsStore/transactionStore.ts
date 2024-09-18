@@ -107,32 +107,61 @@ export const useTransactionStore = defineStore('transactionStore', () => {
             currentTransaction.value = { ...transaction }; // Copiar a transação selecionada para edição
         };
     
-        const updateTransaction = () => {
+        // Update Transactions
+        const updateTransaction = async () => {
             if (currentTransaction.value) {
-                const index = containerAllTransactions.value.findIndex(item => item.id === currentTransaction.value!.id);
-                if (index !== -1) {
-                    containerAllTransactions.value[index] = { ...currentTransaction.value }; // Atualizar a transação
-                    updateFilteredList(); // Atualizar a lista filtrada
-                    currentTransaction.value = null; // Limpar após edição
+                try {
+                    const response: TransactionResponse = await $fetch(`http://localhost:8000/api/transactions/${currentTransaction.value.id}`, {
+                        method: 'PUT',
+                        body: currentTransaction.value,
+                        headers: {
+                            'Authorization': `Bearer ${userToken.value}`,
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    // Atualiza a lista local após sucesso
+                    const index = containerAllTransactions.value.findIndex(item => item.id === currentTransaction.value!.id);
+                    if (index !== -1) {
+                        containerAllTransactions.value[index] = { ...currentTransaction.value };
+                        updateFilteredList(); // Atualizar a lista filtrada
+                        currentTransaction.value = null; // Limpar após edição
+                    }
+
+                    console.log('Transaction updated successfully:', response);
+                } catch (error) {
+                    console.error('Error updating transaction:', error);
                 }
             }
         };
 
+
         // Remove Transactions
-        const removeTransaction = (id: number) => {
-            const transactionIdItem = containerAllTransactions.value
-                .findIndex(item => item.id === id);
-    
-            if (transactionIdItem !== -1) {
+        // Remove Transactions
+        const removeTransaction = async (id: number) => {
+            try {
+                await $fetch(`http://localhost:8000/api/transactions/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${userToken.value}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                // Remove a transação local após sucesso
                 containerAllTransactions.value = containerAllTransactions.value
                     .filter((item) => item.id !== id);
-    
+
                 filteredList.value = filteredList.value
                     .filter((item) => item.id !== id);
-    
-                updateFilteredList();
+
+                updateFilteredList(); // Atualiza a lista filtrada
+                console.log('Transaction removed successfully.');
+            } catch (error) {
+                console.error('Error removing transaction:', error);
             }
         };
+
     /* Actions Crud Transactions */
 
     /* Actions Total, Incomes Expenses */
